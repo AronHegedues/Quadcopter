@@ -2,4 +2,5 @@
 
 lib/main 
 lib/sanitized 
-lib/debug 
+lib/debug
+lib/debug_sanitized
