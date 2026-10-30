@@ -1,0 +1,5 @@
+**/*.o
+
+lib/main 
+lib/sanitized 
+lib/debug 
