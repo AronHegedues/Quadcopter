@@ -1,35 +1,30 @@
-#include <stdio.h>
-#include <unistd.h>
 #include <pigpio.h>
-#include <stdlib.h>
 #include <signal.h>
 
 #include "main.hpp"
-#include "engine.hpp"
+#include "engine_controller.hpp"
 
 void interruptHandler(int a) {
     gpioTerminate();
+    exit(1);
 }
 
 int main() {
-    if (gpioInitialise() < 0) {
-        printf("Failed to initialise gpio. Did you use sudo?\n");
-        return -1;
-    }
-    constexpr int MIN_PULSE_THROTTLE = 1020;
-    constexpr int MAX_PULSE_THROTTLE = 2000;
+    EngineController engines({5, 6, 13, 19});
 
     signal(SIGINT, interruptHandler);   // for ctrl+c
     
-    Engine engine1(19, MIN_PULSE_THROTTLE, MAX_PULSE_THROTTLE);
+    for (int i = 0; i < 1; ++i) {
+        engines.disarm();
+        gpioSleep(PI_TIME_RELATIVE, 0, 2000);
+    }
 
-    engine1.arm();
-
-    engine1.throttle(3.0f, 1, 0);
-
-    engine1.disarm();
-    gpioTerminate();
-
-    printf("Exit successful\n");
+    std::vector<float> testThrottles = {0.3, 0.3, 0.3, 0.3};
+;
+    for (int i = 0; i < 1; ++i) {
+        engines.setThrottles(testThrottles);
+        gpioSleep(PI_TIME_RELATIVE, 0, 1000);
+    }
+    
     return 0;
 }
