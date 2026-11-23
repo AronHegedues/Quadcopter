@@ -14,14 +14,14 @@ int main() {
 
     signal(SIGINT, interruptHandler);   // for ctrl+c
     
-    for (int i = 0; i < 1; ++i) {
+    for (int i = 0; i < 1000; ++i) {
         engines.disarm();
         gpioSleep(PI_TIME_RELATIVE, 0, 2000);
     }
 
     std::vector<float> testThrottles = {0.3, 0.3, 0.3, 0.3};
-;
-    for (int i = 0; i < 1; ++i) {
+
+    for (int i = 0; i < 1000; ++i) {
         engines.setThrottles(testThrottles);
         gpioSleep(PI_TIME_RELATIVE, 0, 1000);
     }
