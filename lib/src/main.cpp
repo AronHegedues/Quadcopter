@@ -1,16 +1,28 @@
 #include <pigpio.h>
 #include <signal.h>
+#include <stdexcept>
 
 #include "main.hpp"
 #include "engine_controller.hpp"
+#include "steering.hpp"
 
+ 
 void interruptHandler(int a) {
     gpioTerminate();
     exit(1);
 }
 
 int main() {
-    EngineController engines({5, 6, 13, 19});
+    if (gpioCfgClock(1, 1, 0) < 0) {
+        throw std::runtime_error("gpioCfgClock(1us) failed");
+    }
+    
+    if (gpioInitialise() < 0) {
+        throw std::runtime_error("gpioInitialise failed. Did you use sudo?");
+    }
+    
+    EngineController engines({5, 23, 20, 27});
+    Steering steering(engines);
 
     signal(SIGINT, interruptHandler);   // for ctrl+c
     
@@ -19,12 +31,7 @@ int main() {
         gpioSleep(PI_TIME_RELATIVE, 0, 2000);
     }
 
-    std::vector<float> testThrottles = {0.3, 0.3, 0.3, 0.3};
+    steering.listen();
 
-    for (int i = 0; i < 1000; ++i) {
-        engines.setThrottles(testThrottles);
-        gpioSleep(PI_TIME_RELATIVE, 0, 1000);
-    }
-    
     return 0;
 }

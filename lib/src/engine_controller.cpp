@@ -22,14 +22,6 @@ EngineController::EngineController(vector<unsigned> pins)
         allPinsMask |= (1U << pin);
     }
 
-    if (gpioCfgClock(1, 1, 0) < 0) {
-        throw runtime_error("gpioCfgClock(1us) failed");
-    }
-    
-    if (gpioInitialise() < 0) {
-        throw runtime_error("gpioInitialise failed. Did you use sudo?");
-    }
-
     for (unsigned pin : this->pins) {
         gpioSetMode(pin, PI_OUTPUT);
         gpioWrite(pin, 0);
